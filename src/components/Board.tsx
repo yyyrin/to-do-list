@@ -8,6 +8,8 @@ const Wrapper = styled.div`
   padding: 20px 10px;
   border-radius: 5px;
   min-height: 300px;
+  display: flex;
+  flex-direction: column;
 `;
 
 const Title = styled.h2`
@@ -22,14 +24,31 @@ interface IBoardProps {
   boardId: string;
 }
 
+interface IAreaProps {
+  $isDraggingOver: boolean;
+  $isDraggingFromThisWith: boolean;
+}
+
+const Area = styled.div<IAreaProps>`
+  background-color: ${(props) =>
+    props.$isDraggingOver
+      ? "pink"
+      : props.$isDraggingFromThisWith
+      ? "red"
+      : "blue"};
+  flex-grow: 1;
+  transition: background-color 0.3s ease-in-out;
+`;
+
 const Board = ({ toDos, boardId }: IBoardProps) => {
   return (
     <Wrapper>
       <Title>{boardId}</Title>
       <Droppable droppableId={boardId}>
-        {(provided) => (
-          <div
-            style={{ backgroundColor: "red" }}
+        {(provided, snapshot) => (
+          <Area
+            $isDraggingOver={snapshot.isDraggingOver}
+            $isDraggingFromThisWith={Boolean(snapshot.draggingFromThisWith)}
             ref={provided.innerRef}
             {...provided.droppableProps}
           >
@@ -37,7 +56,7 @@ const Board = ({ toDos, boardId }: IBoardProps) => {
               <DraggableCard key={toDo} index={index} toDo={toDo} />
             ))}
             {provided.placeholder}
-          </div>
+          </Area>
         )}
       </Droppable>
     </Wrapper>
@@ -45,3 +64,18 @@ const Board = ({ toDos, boardId }: IBoardProps) => {
 };
 
 export default Board;
+
+/* Droppablestate snapshot
+
+- isDraggingOver: boolean
+  - 현재 선택한 Draggable이 특정 Droppable 위에 드래깅 되고 있는지 여부 확인
+
+- draggingOverWith: ?DraggableId
+  - Droppable 위로 드래그하는 Draggable ID
+
+- draggingFromThisWith: ?DraggableId
+  - 현재 Droppable에서 벗어나 드래깅되고 있는 Draggable ID
+
+- isUsingPlaceholder: boolean
+  - placeholder가 사용되고 있는지 여부
+*/
