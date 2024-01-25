@@ -1,34 +1,67 @@
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
+import styled from "styled-components";
+
+const Wrapper = styled.div`
+  display: flex;
+  max-width: 480px;
+  width: 100%;
+  margin: 0 auto;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+`;
+
+const Boards = styled.div`
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  width: 100%;
+`;
+
+const Board = styled.div`
+  background-color: ${(props) => props.theme.boardColor};
+  padding: 20px 10px;
+  border-radius: 5px;
+  min-height: 200px;
+`;
+
+const Card = styled.div`
+  background-color: ${(props) => props.theme.cardColor};
+  border-radius: 5px;
+  padding: 10px 10px;
+  margin-bottom: 5px;
+`;
+
+const toDos = ["a", "b", "c", "d", "e", "f"];
 
 function App() {
   const onDragEnd = () => {};
 
   return (
     <DragDropContext onDragEnd={onDragEnd}>
-      <div>
-        <Droppable droppableId="one">
-          {(provided) => (
-            <ul ref={provided.innerRef} {...provided.droppableProps}>
-              <Draggable draggableId="first" index={0}>
-                {(provided) => (
-                  <li ref={provided.innerRef} {...provided.draggableProps}>
-                    <span {...provided.dragHandleProps}>🔥</span>
-                    One
-                  </li>
-                )}
-              </Draggable>
-              <Draggable draggableId="second" index={1}>
-                {(provided) => (
-                  <li ref={provided.innerRef} {...provided.draggableProps}>
-                    <span {...provided.dragHandleProps}>🔥</span>
-                    Two
-                  </li>
-                )}
-              </Draggable>
-            </ul>
-          )}
-        </Droppable>
-      </div>
+      <Wrapper>
+        <Boards>
+          <Droppable droppableId="one">
+            {(provided) => (
+              <Board ref={provided.innerRef} {...provided.droppableProps}>
+                {toDos.map((toDo, index) => (
+                  <Draggable draggableId={toDo} index={index}>
+                    {(provided) => (
+                      <Card
+                        ref={provided.innerRef}
+                        {...provided.dragHandleProps}
+                        {...provided.draggableProps}
+                      >
+                        {toDo}
+                      </Card>
+                    )}
+                  </Draggable>
+                ))}
+                {provided.placeholder}
+              </Board>
+            )}
+          </Droppable>
+        </Boards>
+      </Wrapper>
     </DragDropContext>
   );
 }
@@ -56,4 +89,9 @@ export default App;
 - draggableProps
   - drag 되는 아이템에 적용해야 하는 프로퍼티들을 포함한 객체
   - 이를 통해 drag된 아이템의 스타일 등을 조절할 수 있음
+
+- provided.placeholder (?ReactElement)
+  - Draggable 엘리먼트를 드래그하는 동안 position: fixed(영역을 고정시킴)를 적용
+  - Draggable을 드래그할 때 Droppable 리스트가 작아지는 것을 방지하기 위해 필요
+  - Draggable 노드의 형제로 렌더링하는 게 좋음
 */
