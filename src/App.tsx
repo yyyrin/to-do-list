@@ -42,8 +42,24 @@ function App() {
   const [toDos, setToDos] = useRecoilState(toDoState);
 
   // 드래그가 끝났을 때 실행되는 함수
-  const onDragEnd = ({ destination, source }: DropResult) => {
-    console.log(args);
+  const onDragEnd = ({ draggableId, destination, source }: DropResult) => {
+    // Draggable이 시작한 위치와 같은 위치로 돌아오는 경우
+    if (!destination) return;
+
+    setToDos((oldTodos) => {
+      const toDosCopy = [...oldTodos];
+      console.log("Delete item on", source.index);
+      console.log(toDosCopy);
+      // 1) Delete item on source.index
+      toDosCopy.splice(source.index, 1);
+      console.log("Deleted item");
+      console.log(toDosCopy);
+      // 2) Put back the item on the destination.index
+      console.log("Put back", draggableId, "on", destination.index);
+      toDosCopy.splice(destination?.index, 0, draggableId);
+      console.log(toDosCopy);
+      return toDosCopy;
+    });
   };
 
   return (
@@ -54,7 +70,8 @@ function App() {
             {(provided) => (
               <Board ref={provided.innerRef} {...provided.droppableProps}>
                 {toDos.map((toDo, index) => (
-                  <Draggable key={index} draggableId={toDo} index={index}>
+                  // key와 draggableId는 같아야 함
+                  <Draggable key={toDo} draggableId={toDo} index={index}>
                     {(provided) => (
                       <Card
                         ref={provided.innerRef}
@@ -111,4 +128,13 @@ export default App;
   - result.type: 드래그 되었던 Draggable의 type
   - result.source: Draggable 이 시작된 위치(location)
   - result.destination: Draggable이 끝난 위치(location). 만약에 Draggable이 시작한 위치와 같은 위치로 돌아오면 이 destination값은 null이 될 것.
+
+- <Draggable /> list의 키
+  - <Draggable /> list를 렌더링하는 경우 각 <Draggable />에 key prop을 추가하는 것이 중요
+  - 규칙
+    - key는 list 내에서 고유해야 함
+    - key에 item의 index가 포함되어서는 안 됨(map의 index 사용 X)
+    - 일반적으로 draggableId를 key로 사용하면 안 됨
+    - list에 key가 없으면 React가 경고하지만 index를 key로 사용하는 경우 경고하지 않음
+    - key를 올바르게 사용하는 것이 중요!!!
 */
