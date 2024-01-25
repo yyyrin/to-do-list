@@ -6,8 +6,7 @@ import Board from "./components/Board";
 
 const Wrapper = styled.div`
   display: flex;
-  max-width: 680px;
-  width: 100%;
+  width: 100vw;
   margin: 0 auto;
   justify-content: center;
   align-items: center;
@@ -15,8 +14,9 @@ const Wrapper = styled.div`
 `;
 
 const Boards = styled.div`
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
   width: 100%;
   gap: 10px;
 `;
@@ -25,18 +25,23 @@ function App() {
   const [toDos, setToDos] = useRecoilState(toDoState);
 
   // 드래그가 끝났을 때 실행되는 함수
-  const onDragEnd = ({ draggableId, destination, source }: DropResult) => {
-    // Draggable이 시작한 위치와 같은 위치로 돌아오는 경우
-    if (!destination) return;
-
-    setToDos((oldTodos) => {
-      const toDosCopy = [...oldTodos];
-      // 1) Delete item on source.index
-      toDosCopy.splice(source.index, 1);
-      // 2) Put back the item on the destination.index
-      toDosCopy.splice(destination?.index, 0, draggableId);
-      return toDosCopy;
-    });
+  const onDragEnd = (info: DropResult) => {
+    console.log(info);
+    const { destination, draggableId, source } = info;
+    if (destination?.droppableId === source.droppableId) {
+      // same board movement
+      setToDos((allBoards) => {
+        const boardCopy = [...allBoards[source.droppableId]];
+        // 1) Delete item on source.index
+        boardCopy.splice(source.index, 1);
+        // 2) Put back the item on the destination.index
+        boardCopy.splice(destination?.index, 0, draggableId);
+        return {
+          ...allBoards,
+          [source.droppableId]: boardCopy,
+        };
+      });
+    }
   };
 
   return (
