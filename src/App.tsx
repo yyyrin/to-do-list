@@ -1,7 +1,7 @@
 import { DragDropContext, DropResult } from "react-beautiful-dnd";
 import { useRecoilState } from "recoil";
 import styled from "styled-components";
-import { toDoState } from "./atoms";
+import { IToDoState, toDoState } from "./atoms";
 import Board from "./components/Board";
 
 const Wrapper = styled.div`
@@ -25,11 +25,11 @@ function App() {
   const [toDos, setToDos] = useRecoilState(toDoState);
 
   // 드래그가 끝났을 때 실행되는 함수
-  const onDragEnd = (info: DropResult) => {
-    console.log(info);
-    const { destination, draggableId, source } = info;
+  const onDragEnd = ({ draggableId, destination, source }: DropResult) => {
+    if (!destination) return;
+
+    // same board movement
     if (destination?.droppableId === source.droppableId) {
-      // same board movement
       setToDos((allBoards) => {
         const boardCopy = [...allBoards[source.droppableId]];
         // 1) Delete item on source.index
@@ -42,6 +42,38 @@ function App() {
         };
       });
     }
+
+    // cross board movement
+    if (destination.droppableId !== source.droppableId) {
+      setToDos((allBoards) => {
+        const sourceBoard = [...allBoards[source.droppableId]];
+        const destinationBoard = [...allBoards[destination.droppableId]];
+        sourceBoard.splice(source.index, 1);
+        destinationBoard.splice(destination.index, 0, draggableId);
+        return {
+          ...allBoards,
+          [source.droppableId]: sourceBoard,
+          [destination.droppableId]: destinationBoard,
+        };
+      });
+    }
+
+    /*
+    // 한 번에 처리하는 방법
+    setToDos((allBoards) => {
+      const copyToDos: IToDoState = {};
+      Object.keys(allBoards).forEach((toDosKey) => {
+        copyToDos[toDosKey] = [...allBoards[toDosKey]];
+      });
+      copyToDos[source.droppableId].splice(source.index, 1);
+      copyToDos[destination.droppableId].splice(
+        destination.index,
+        0,
+        draggableId
+      );
+      return copyToDos;
+    });
+    */
   };
 
   return (
