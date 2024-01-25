@@ -1,5 +1,12 @@
-import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
+import {
+  DragDropContext,
+  Droppable,
+  Draggable,
+  DropResult,
+} from "react-beautiful-dnd";
+import { useRecoilState } from "recoil";
 import styled from "styled-components";
+import { toDoState } from "./atoms";
 
 const Wrapper = styled.div`
   display: flex;
@@ -31,10 +38,13 @@ const Card = styled.div`
   margin-bottom: 5px;
 `;
 
-const toDos = ["a", "b", "c", "d", "e", "f"];
-
 function App() {
-  const onDragEnd = () => {};
+  const [toDos, setToDos] = useRecoilState(toDoState);
+
+  // 드래그가 끝났을 때 실행되는 함수
+  const onDragEnd = ({ destination, source }: DropResult) => {
+    console.log(args);
+  };
 
   return (
     <DragDropContext onDragEnd={onDragEnd}>
@@ -44,7 +54,7 @@ function App() {
             {(provided) => (
               <Board ref={provided.innerRef} {...provided.droppableProps}>
                 {toDos.map((toDo, index) => (
-                  <Draggable draggableId={toDo} index={index}>
+                  <Draggable key={index} draggableId={toDo} index={index}>
                     {(provided) => (
                       <Card
                         ref={provided.innerRef}
@@ -94,4 +104,11 @@ export default App;
   - Draggable 엘리먼트를 드래그하는 동안 position: fixed(영역을 고정시킴)를 적용
   - Draggable을 드래그할 때 Droppable 리스트가 작아지는 것을 방지하기 위해 필요
   - Draggable 노드의 형제로 렌더링하는 게 좋음
+
+- onDragEnd
+  - result: DropResult
+  - result.draggableId: 드래그 되었던 Draggable의 id
+  - result.type: 드래그 되었던 Draggable의 type
+  - result.source: Draggable 이 시작된 위치(location)
+  - result.destination: Draggable이 끝난 위치(location). 만약에 Draggable이 시작한 위치와 같은 위치로 돌아오면 이 destination값은 null이 될 것.
 */
