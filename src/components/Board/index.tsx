@@ -37,22 +37,19 @@ const Board = ({ toDos, boardId }: IBoardProps) => {
 
   return (
     <style.Wrapper>
-      <style.Title>{boardId}</style.Title>
+      <style.TitleContainer>
+        <h2>{boardId}</h2>
+      </style.TitleContainer>
       <style.Form onSubmit={handleSubmit(onValid)}>
         <input
           {...register("toDo", { required: true })}
           type="text"
-          placeholder={`Add task on ${boardId}`}
+          placeholder={`Add task on task`}
         />
       </style.Form>
       <Droppable droppableId={boardId}>
-        {(provided, snapshot) => (
-          <style.Area
-            $isDraggingOver={snapshot.isDraggingOver}
-            $isDraggingFromThisWith={Boolean(snapshot.draggingFromThisWith)}
-            ref={provided.innerRef}
-            {...provided.droppableProps}
-          >
+        {(provided) => (
+          <style.Area ref={provided.innerRef} {...provided.droppableProps}>
             {toDos.map((toDo, index) => (
               <DraggableCard
                 key={toDo.id}
