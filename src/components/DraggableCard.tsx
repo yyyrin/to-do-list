@@ -2,11 +2,14 @@ import { memo } from "react";
 import { Draggable } from "react-beautiful-dnd";
 import styled from "styled-components";
 
-const Card = styled.div`
-  background-color: ${(props) => props.theme.cardColor};
+const Card = styled.div<{ $isDragging: boolean }>`
   border-radius: 5px;
   padding: 10px 10px;
   margin-bottom: 5px;
+  background-color: ${(props) =>
+    props.$isDragging ? "#74b9ff" : props.theme.cardColor};
+  box-shadow: ${(props) =>
+    props.$isDragging ? "0px 2px 5px rgba(0, 0, 0, 0.05)" : "none"};
 `;
 
 interface IDraggableCardProps {
@@ -17,8 +20,9 @@ interface IDraggableCardProps {
 const DraggableCard = ({ toDo, index }: IDraggableCardProps) => {
   return (
     <Draggable draggableId={toDo} index={index}>
-      {(provided) => (
+      {(provided, snapshot) => (
         <Card
+          $isDragging={snapshot.isDragging}
           ref={provided.innerRef}
           {...provided.dragHandleProps}
           {...provided.draggableProps}
@@ -47,4 +51,10 @@ export default memo(DraggableCard);
 
 - 현재 React 18.2 버전에서는 memo(컴포넌트명, arePropsEqual?)로 사용
   - React.memo로 사용해도 지장X
+*/
+
+/* Draggablestate snapshot
+
+- isDragging: boolean
+  - Draggable이 활발하게 드래그 중이거나 드롭 애니메이션인 경우 true로 설정함
 */
