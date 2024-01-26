@@ -25,17 +25,20 @@ function App() {
   const [toDos, setToDos] = useRecoilState(toDoState);
 
   // 드래그가 끝났을 때 실행되는 함수
-  const onDragEnd = ({ draggableId, destination, source }: DropResult) => {
+  const onDragEnd = ({ destination, source }: DropResult) => {
+    // 드래그를 시작한 위치와 같은 위치로 돌아오는 경우
     if (!destination) return;
 
-    // same board movement
+    // 같은 board 내에서의 이동
     if (destination?.droppableId === source.droppableId) {
       setToDos((allBoards) => {
         const boardCopy = [...allBoards[source.droppableId]];
+        const taskObj = boardCopy[source.index];
         // 1) Delete item on source.index
         boardCopy.splice(source.index, 1);
         // 2) Put back the item on the destination.index
-        boardCopy.splice(destination?.index, 0, draggableId);
+        boardCopy.splice(destination?.index, 0, taskObj);
+
         return {
           ...allBoards,
           [source.droppableId]: boardCopy,
@@ -43,13 +46,17 @@ function App() {
       });
     }
 
-    // cross board movement
+    // 다른 board로의 이동
     if (destination.droppableId !== source.droppableId) {
       setToDos((allBoards) => {
         const sourceBoard = [...allBoards[source.droppableId]];
+        const taskObj = sourceBoard[source.index];
         const destinationBoard = [...allBoards[destination.droppableId]];
+        // 1) Delete item on source.index
         sourceBoard.splice(source.index, 1);
-        destinationBoard.splice(destination.index, 0, draggableId);
+        // 2) Put back the item on the destination.index
+        destinationBoard.splice(destination.index, 0, taskObj);
+
         return {
           ...allBoards,
           [source.droppableId]: sourceBoard,

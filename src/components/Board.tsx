@@ -2,7 +2,8 @@ import { useForm } from "react-hook-form";
 import { Droppable } from "react-beautiful-dnd";
 import styled from "styled-components";
 import DraggableCard from "./DraggableCard";
-import { ITodo } from "../atoms";
+import { ITodo, toDoState } from "../atoms";
+import { useSetRecoilState } from "recoil";
 
 const Wrapper = styled.div`
   width: 300px;
@@ -55,8 +56,23 @@ interface IForm {
 }
 
 const Board = ({ toDos, boardId }: IBoardProps) => {
+  const setToDos = useSetRecoilState(toDoState);
   const { register, setValue, handleSubmit } = useForm<IForm>();
+
+  // 폼 제출 시 호출되는 함수
   const onValid = ({ toDo }: IForm) => {
+    // 새로운 toDo 생성
+    const newToDo = {
+      id: Date.now(),
+      text: toDo,
+    };
+
+    // recoil 상태 업데이트
+    setToDos((allBoards) => {
+      return { ...allBoards, [boardId]: [...allBoards[boardId], newToDo] };
+    });
+
+    // 입력 필드 초기화
     setValue("toDo", "");
   };
 
