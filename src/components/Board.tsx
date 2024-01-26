@@ -1,7 +1,8 @@
+import { useForm } from "react-hook-form";
 import { Droppable } from "react-beautiful-dnd";
 import styled from "styled-components";
 import DraggableCard from "./DraggableCard";
-import { useRef } from "react";
+import { ITodo } from "../atoms";
 
 const Wrapper = styled.div`
   width: 300px;
@@ -21,7 +22,7 @@ const Title = styled.h2`
 `;
 
 interface IBoardProps {
-  toDos: string[];
+  toDos: ITodo[];
   boardId: string;
 }
 
@@ -42,23 +43,33 @@ const Area = styled.div<IAreaProps>`
   padding: 20px;
 `;
 
-const Board = ({ toDos, boardId }: IBoardProps) => {
-  // input element에 대한 ref 생성
-  const inputRef = useRef<HTMLInputElement>(null);
+const Form = styled.form`
+  width: 100%;
+  input {
+    width: 100%;
+  }
+`;
 
-  // input element를 포커싱하고 5초 후에 블러 처리하는 함수
-  const onClick = () => {
-    inputRef.current?.focus();
-    setTimeout(() => {
-      inputRef.current?.blur();
-    }, 5000);
+interface IForm {
+  toDo: string;
+}
+
+const Board = ({ toDos, boardId }: IBoardProps) => {
+  const { register, setValue, handleSubmit } = useForm<IForm>();
+  const onValid = ({ toDo }: IForm) => {
+    setValue("toDo", "");
   };
 
   return (
     <Wrapper>
       <Title>{boardId}</Title>
-      <input ref={inputRef} placeholder="grab me" />
-      <button onClick={onClick}>click me</button>
+      <Form onSubmit={handleSubmit(onValid)}>
+        <input
+          {...register("toDo", { required: true })}
+          type="text"
+          placeholder={`Add task on ${boardId}`}
+        />
+      </Form>
       <Droppable droppableId={boardId}>
         {(provided, snapshot) => (
           <Area
@@ -68,7 +79,12 @@ const Board = ({ toDos, boardId }: IBoardProps) => {
             {...provided.droppableProps}
           >
             {toDos.map((toDo, index) => (
-              <DraggableCard key={toDo} index={index} toDo={toDo} />
+              <DraggableCard
+                key={toDo.id}
+                index={index}
+                toDoId={toDo.id}
+                toDoText={toDo.text}
+              />
             ))}
             {provided.placeholder}
           </Area>
