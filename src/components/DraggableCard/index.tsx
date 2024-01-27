@@ -46,7 +46,7 @@ const DraggableCard = ({ toDoId, toDoText, index }: IDraggableCardProps) => {
           {...provided.draggableProps}
         >
           <p>{toDoText}</p>
-          <button onClick={onDelete}>X</button>
+          <style.DeleteIcStyle onClick={onDelete} />
         </style.Card>
       )}
     </Draggable>
