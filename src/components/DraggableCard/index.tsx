@@ -1,6 +1,8 @@
 import { memo } from "react";
 import { Draggable } from "react-beautiful-dnd";
 import * as style from "./styles";
+import { useRecoilCallback } from "recoil";
+import { IToDoState, toDoState } from "../../atoms";
 
 interface IDraggableCardProps {
   toDoId: number;
@@ -9,6 +11,31 @@ interface IDraggableCardProps {
 }
 
 const DraggableCard = ({ toDoId, toDoText, index }: IDraggableCardProps) => {
+  const onDelete = useRecoilCallback(({ set }) => () => {
+    set(toDoState, (prevToDoState: IToDoState) => {
+      for (const category in prevToDoState) {
+        // 현재 category에서 삭제하려는 toDoId를 가진 항목의 인덱스 찾기
+        const indexToRemove = prevToDoState[category].findIndex(
+          (toDo) => toDo.id === toDoId
+        );
+
+        // 해당 toDoId를 가진 항목이 현재 category에 존재하는 경우
+        if (indexToRemove !== -1) {
+          // 현재 cateogry의 복사본을 만들어서 해당 항목을 삭제하고 updatedState에 할당
+          const updatedCategory = [...prevToDoState[category]];
+          updatedCategory.splice(indexToRemove, 1);
+
+          return {
+            ...prevToDoState,
+            [category]: updatedCategory,
+          };
+        }
+      }
+
+      return prevToDoState;
+    });
+  });
+
   return (
     <Draggable draggableId={toDoId + ""} index={index}>
       {(provided, snapshot) => (
@@ -18,7 +45,8 @@ const DraggableCard = ({ toDoId, toDoText, index }: IDraggableCardProps) => {
           {...provided.dragHandleProps}
           {...provided.draggableProps}
         >
-          {toDoText}
+          <p>{toDoText}</p>
+          <button onClick={onDelete}>X</button>
         </style.Card>
       )}
     </Draggable>
