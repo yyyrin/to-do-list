@@ -2,7 +2,7 @@ import { useForm } from "react-hook-form";
 import { Droppable } from "react-beautiful-dnd";
 import DraggableCard from "../DraggableCard";
 import { ITodo, boardState } from "../../atoms";
-import { useSetRecoilState } from "recoil";
+import { useRecoilState } from "recoil";
 import * as style from "./styles";
 
 interface IBoardProps {
@@ -15,7 +15,7 @@ interface IForm {
 }
 
 const Board = ({ toDos, boardId }: IBoardProps) => {
-  const setBoard = useSetRecoilState(boardState);
+  const [boards, setBoards] = useRecoilState(boardState);
   const { register, setValue, handleSubmit } = useForm<IForm>();
 
   // 폼 제출 시 호출되는 함수
@@ -27,7 +27,7 @@ const Board = ({ toDos, boardId }: IBoardProps) => {
     };
 
     // recoil 상태 업데이트
-    setBoard((currentBoards) => {
+    setBoards((currentBoards) => {
       const updatedBoards = [...currentBoards];
       const targetBoardIndex = updatedBoards.findIndex(
         (board) => board.title === boardId
@@ -47,11 +47,18 @@ const Board = ({ toDos, boardId }: IBoardProps) => {
     setValue("toDo", "");
   };
 
+  // board 삭제
+  const onDelete = () => {
+    const updatedBoards = boards.filter((board) => board.title !== boardId);
+
+    setBoards(updatedBoards);
+  };
+
   return (
     <style.Wrapper>
       <style.TitleContainer>
         <h2>{boardId}</h2>
-        <style.DeleteIcStyle />
+        <style.DeleteIcStyle onClick={onDelete} />
       </style.TitleContainer>
       <style.Form onSubmit={handleSubmit(onValid)}>
         <input
