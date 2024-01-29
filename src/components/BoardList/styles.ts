@@ -2,17 +2,19 @@ import styled from "styled-components";
 
 export const Wrapper = styled.div`
   display: flex;
-  width: 100vw;
-  margin: 0 auto;
+  width: 100%;
+  margin: 16px auto;
   justify-content: center;
   align-items: center;
-  height: 100vh;
+  overflow-x: auto;
 `;
 
 export const Boards = styled.div`
   display: flex;
-  justify-content: center;
+  justify-content: start;
   align-items: flex-start;
   width: 100%;
   gap: 10px;
+  flex-shrink: 0;
+  white-space: nowrap;
 `;

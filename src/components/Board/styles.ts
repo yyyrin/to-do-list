@@ -1,7 +1,7 @@
 import styled from "styled-components";
 
 export const Wrapper = styled.div`
-  width: 300px;
+  width: 240px;
   background-color: ${(props) => props.theme.boardColor};
   border-radius: 10px;
   min-height: 300px;
