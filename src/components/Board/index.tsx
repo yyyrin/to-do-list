@@ -51,6 +51,7 @@ const Board = ({ toDos, boardId }: IBoardProps) => {
     <style.Wrapper>
       <style.TitleContainer>
         <h2>{boardId}</h2>
+        <style.DeleteIcStyle />
       </style.TitleContainer>
       <style.Form onSubmit={handleSubmit(onValid)}>
         <input
