@@ -68,17 +68,15 @@ const BoardList = () => {
 
   return (
     <DragDropContext onDragEnd={onDragEnd}>
-      <style.Wrapper>
-        <style.Boards>
-          {boards.map((board) => (
-            <Board
-              boardId={board.title}
-              key={board.title}
-              toDos={board.content}
-            />
-          ))}
-        </style.Boards>
-      </style.Wrapper>
+      <style.Boards>
+        {boards.map((board) => (
+          <Board
+            boardId={board.title}
+            key={board.title}
+            toDos={board.content}
+          />
+        ))}
+      </style.Boards>
     </DragDropContext>
   );
 };
