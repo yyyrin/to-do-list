@@ -2,37 +2,48 @@ import { memo } from "react";
 import { Draggable } from "react-beautiful-dnd";
 import * as style from "./styles";
 import { useRecoilCallback } from "recoil";
-import { IToDoState, toDoState } from "../../atoms";
+import { IBoard, boardState } from "../../atoms";
 
 interface IDraggableCardProps {
   toDoId: number;
   toDoText: string;
   index: number;
+  boardId: string;
 }
 
-const DraggableCard = ({ toDoId, toDoText, index }: IDraggableCardProps) => {
+const DraggableCard = ({
+  toDoId,
+  toDoText,
+  index,
+  boardId,
+}: IDraggableCardProps) => {
   const onDelete = useRecoilCallback(({ set }) => () => {
-    set(toDoState, (prevToDoState: IToDoState) => {
-      for (const category in prevToDoState) {
-        // 현재 category에서 삭제하려는 toDoId를 가진 항목의 인덱스 찾기
-        const indexToRemove = prevToDoState[category].findIndex(
+    set(boardState, (prevBoardState: IBoard[]) => {
+      const updatedBoards = [...prevBoardState];
+      const targetBoardIndex = updatedBoards.findIndex(
+        (board) => board.title === boardId
+      );
+
+      if (targetBoardIndex !== -1) {
+        // 해당 board의 할 일 목록에서 삭제하려는 toDoId를 가진 항목의 인덱스 찾기
+        const indexToRemove = updatedBoards[targetBoardIndex].content.findIndex(
           (toDo) => toDo.id === toDoId
         );
 
-        // 해당 toDoId를 가진 항목이 현재 category에 존재하는 경우
+        // 해당 toDoId를 가진 항목이 현재 board의 할 일 목록에 존재하는 경우
         if (indexToRemove !== -1) {
-          // 현재 cateogry의 복사본을 만들어서 해당 항목을 삭제하고 updatedState에 할당
-          const updatedCategory = [...prevToDoState[category]];
-          updatedCategory.splice(indexToRemove, 1);
+          // 현재 board의 할 일 목록의 복사본을 만들어서 해당 항목을 삭제하고 updatedBoards에 할당
+          const updatedContent = [...updatedBoards[targetBoardIndex].content];
+          updatedContent.splice(indexToRemove, 1);
 
-          return {
-            ...prevToDoState,
-            [category]: updatedCategory,
+          updatedBoards[targetBoardIndex] = {
+            ...updatedBoards[targetBoardIndex],
+            content: updatedContent,
           };
         }
       }
 
-      return prevToDoState;
+      return updatedBoards;
     });
   });
 

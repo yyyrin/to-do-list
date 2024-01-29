@@ -1,11 +1,11 @@
 import { useRecoilState } from "recoil";
-import { toDoState } from "../../atoms";
+import { boardState } from "../../atoms";
 import { DragDropContext, DropResult } from "react-beautiful-dnd";
 import * as style from "./styles";
 import Board from "../Board";
 
 const BoardList = () => {
-  const [toDos, setToDos] = useRecoilState(toDoState);
+  const [boards, setBoards] = useRecoilState(boardState);
 
   // 드래그가 끝났을 때 실행되는 함수
   const onDragEnd = ({ destination, source }: DropResult) => {
@@ -14,37 +14,54 @@ const BoardList = () => {
 
     // 같은 board 내에서의 이동
     if (destination?.droppableId === source.droppableId) {
-      setToDos((allBoards) => {
-        const boardCopy = [...allBoards[source.droppableId]];
-        const taskObj = boardCopy[source.index];
-        // 1) Delete item on source.index
-        boardCopy.splice(source.index, 1);
-        // 2) Put back the item on the destination.index
-        boardCopy.splice(destination?.index, 0, taskObj);
+      setBoards((currentBoards) => {
+        const updatedBoards = [...currentBoards];
+        const sourceBoard = updatedBoards.find(
+          (board) => board.title === source.droppableId
+        );
+        if (sourceBoard) {
+          const updatedContent = [...sourceBoard.content];
+          const [removedItem] = updatedContent.splice(source.index, 1);
+          updatedContent.splice(destination.index, 0, removedItem);
 
-        return {
-          ...allBoards,
-          [source.droppableId]: boardCopy,
-        };
+          return updatedBoards.map((board) =>
+            board.title === source.droppableId
+              ? { ...board, content: updatedContent }
+              : board
+          );
+        }
+
+        return updatedBoards;
       });
     }
 
     // 다른 board로의 이동
     if (destination.droppableId !== source.droppableId) {
-      setToDos((allBoards) => {
-        const sourceBoard = [...allBoards[source.droppableId]];
-        const taskObj = sourceBoard[source.index];
-        const destinationBoard = [...allBoards[destination.droppableId]];
-        // 1) Delete item on source.index
-        sourceBoard.splice(source.index, 1);
-        // 2) Put back the item on the destination.index
-        destinationBoard.splice(destination.index, 0, taskObj);
+      setBoards((currentBoards) => {
+        const updatedBoards = [...currentBoards];
+        const sourceBoard = updatedBoards.find(
+          (board) => board.title === source.droppableId
+        );
+        const destinationBoard = updatedBoards.find(
+          (board) => board.title === destination.droppableId
+        );
+        if (sourceBoard && destinationBoard) {
+          const updatedSourceContent = [...sourceBoard.content];
+          const updatedDestinationContent = [...destinationBoard.content];
 
-        return {
-          ...allBoards,
-          [source.droppableId]: sourceBoard,
-          [destination.droppableId]: destinationBoard,
-        };
+          const [removedItem] = updatedSourceContent.splice(source.index, 1);
+          updatedDestinationContent.splice(destination.index, 0, removedItem);
+
+          return updatedBoards.map((board) =>
+            board.title === source.droppableId
+              ? { ...board, content: updatedSourceContent }
+              : board.title === destination.droppableId
+              ? { ...board, content: updatedDestinationContent }
+              : board
+          );
+        }
+
+        return updatedBoards;
       });
     }
   };
@@ -53,8 +70,12 @@ const BoardList = () => {
     <DragDropContext onDragEnd={onDragEnd}>
       <style.Wrapper>
         <style.Boards>
-          {Object.keys(toDos).map((boardId) => (
-            <Board boardId={boardId} key={boardId} toDos={toDos[boardId]} />
+          {boards.map((board) => (
+            <Board
+              boardId={board.title}
+              key={board.title}
+              toDos={board.content}
+            />
           ))}
         </style.Boards>
       </style.Wrapper>

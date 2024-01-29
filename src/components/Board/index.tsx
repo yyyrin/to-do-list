@@ -1,7 +1,7 @@
 import { useForm } from "react-hook-form";
 import { Droppable } from "react-beautiful-dnd";
 import DraggableCard from "../DraggableCard";
-import { ITodo, toDoState } from "../../atoms";
+import { ITodo, boardState } from "../../atoms";
 import { useSetRecoilState } from "recoil";
 import * as style from "./styles";
 
@@ -15,20 +15,32 @@ interface IForm {
 }
 
 const Board = ({ toDos, boardId }: IBoardProps) => {
-  const setToDos = useSetRecoilState(toDoState);
+  const setBoard = useSetRecoilState(boardState);
   const { register, setValue, handleSubmit } = useForm<IForm>();
 
   // 폼 제출 시 호출되는 함수
   const onValid = ({ toDo }: IForm) => {
     // 새로운 toDo 생성
-    const newToDo = {
+    const newToDo: ITodo = {
       id: Date.now(),
       text: toDo,
     };
 
     // recoil 상태 업데이트
-    setToDos((allBoards) => {
-      return { ...allBoards, [boardId]: [...allBoards[boardId], newToDo] };
+    setBoard((currentBoards) => {
+      const updatedBoards = [...currentBoards];
+      const targetBoardIndex = updatedBoards.findIndex(
+        (board) => board.title === boardId
+      );
+
+      if (targetBoardIndex !== -1) {
+        updatedBoards[targetBoardIndex] = {
+          ...updatedBoards[targetBoardIndex],
+          content: [...updatedBoards[targetBoardIndex].content, newToDo],
+        };
+      }
+
+      return updatedBoards;
     });
 
     // 입력 필드 초기화
@@ -56,6 +68,7 @@ const Board = ({ toDos, boardId }: IBoardProps) => {
                 index={index}
                 toDoId={toDo.id}
                 toDoText={toDo.text}
+                boardId={boardId}
               />
             ))}
             {provided.placeholder}
