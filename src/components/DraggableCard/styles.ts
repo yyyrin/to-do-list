@@ -30,6 +30,7 @@ export const DeleteIcStyle = styled(DeleteIc)`
   fill: grey;
   cursor: pointer;
   transition: fill 0.3 ease;
+  flex-shrink: 0;
   &:hover {
     fill: white;
   }
