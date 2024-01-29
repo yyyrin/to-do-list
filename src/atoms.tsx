@@ -10,12 +10,39 @@ export interface IBoard {
   content: ITodo[];
 }
 
+// localStorage에서 값을 가져오거나 저장하는 동작을 수행하는 함수
+const syncWithLocalStorage = (key: string, defaultValue: IBoard[]) => {
+  // localStorage에서 해당 key에 해당하는 값을 가져옴
+  const storedValue = localStorage.getItem(key);
+
+  if (storedValue) {
+    try {
+      // 저장된 값을 JSON 파싱하여 반환
+      return JSON.parse(storedValue);
+    } catch (error) {
+      console.log("Error parsing localStorage", error);
+      return defaultValue;
+    }
+  }
+
+  return defaultValue;
+};
+
 export const boardState = atom<Array<IBoard>>({
   key: "board",
-  default: [
-    { title: "To Do", content: [] },
-    { title: "Doing", content: [] },
-    { title: "Done", content: [] },
+  default: syncWithLocalStorage("board", []),
+  // Recoil에서 상태 변경 시 특정 동작을 수행할 때 사용되는 부분
+  effects_UNSTABLE: [
+    ({ onSet }) => {
+      onSet((newValue) => {
+        try {
+          // 변경된 상태를 JSON 문자열로 변환하여 localStorage 저장
+          localStorage.setItem("board", JSON.stringify(newValue));
+        } catch (error) {
+          console.log("Error saving to localStorage", error);
+        }
+      });
+    },
   ],
 });
 
