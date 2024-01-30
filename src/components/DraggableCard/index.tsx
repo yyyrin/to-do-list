@@ -17,6 +17,8 @@ const DraggableCard = ({
   index,
   boardId,
 }: IDraggableCardProps) => {
+  const onEdit = () => {};
+
   const onDelete = useRecoilCallback(({ set }) => () => {
     set(boardState, (prevBoardState: IBoard[]) => {
       const updatedBoards = [...prevBoardState];
@@ -57,7 +59,10 @@ const DraggableCard = ({
           {...provided.draggableProps}
         >
           <p>{toDoText}</p>
-          <style.DeleteIcStyle onClick={onDelete} />
+          <style.IconContainer>
+            <style.EditIcStyle onClick={onEdit} />
+            <style.DeleteIcStyle onClick={onDelete} />
+          </style.IconContainer>
         </style.Card>
       )}
     </Draggable>

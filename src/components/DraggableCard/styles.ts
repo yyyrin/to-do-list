@@ -1,9 +1,10 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import DeleteIc from "../../assets/delteIc.svg?react";
+import EditIc from "../../assets/editIc.svg?react";
 
 export const Card = styled.div<{ $isDragging: boolean }>`
   border-radius: 4px;
-  padding: 14px 10px;
+  padding: 14px 12px;
   margin-bottom: 8px;
   background-color: ${(props) =>
     props.$isDragging ? "rgba(0, 0, 0, 0.5)" : props.theme.cardColor};
@@ -24,7 +25,7 @@ export const Card = styled.div<{ $isDragging: boolean }>`
   }
 `;
 
-export const DeleteIcStyle = styled(DeleteIc)`
+const IconStyle = css`
   width: 10px;
   height: 10px;
   fill: grey;
@@ -34,4 +35,18 @@ export const DeleteIcStyle = styled(DeleteIc)`
   &:hover {
     fill: white;
   }
+`;
+
+export const IconContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+`;
+
+export const DeleteIcStyle = styled(DeleteIc)`
+  ${IconStyle}
+`;
+
+export const EditIcStyle = styled(EditIc)`
+  ${IconStyle}
 `;
