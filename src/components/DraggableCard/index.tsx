@@ -1,4 +1,4 @@
-import { memo, useState } from "react";
+import { memo, useEffect, useState } from "react";
 import { Draggable } from "react-beautiful-dnd";
 import * as style from "./styles";
 import { useRecoilCallback, useSetRecoilState } from "recoil";
@@ -26,9 +26,14 @@ const DraggableCard = ({
   const [isEdit, setIsEdit] = useState(false);
   const { register, handleSubmit, setFocus, reset } = useForm<IEditForm>();
 
+  useEffect(() => {
+    if (isEdit) {
+      setFocus("editToDo");
+    }
+  }, [isEdit, setFocus]);
+
   const onShowEdit = () => {
     setIsEdit(true);
-    setFocus("editToDo");
   };
 
   // toDo 수정 완료하는 함수
