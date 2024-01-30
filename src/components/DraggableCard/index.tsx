@@ -1,8 +1,9 @@
-import { memo } from "react";
+import { memo, useState } from "react";
 import { Draggable } from "react-beautiful-dnd";
 import * as style from "./styles";
-import { useRecoilCallback } from "recoil";
+import { useRecoilCallback, useSetRecoilState } from "recoil";
 import { IBoard, boardState } from "../../atoms";
+import { useForm } from "react-hook-form";
 
 interface IDraggableCardProps {
   toDoId: number;
@@ -11,13 +12,64 @@ interface IDraggableCardProps {
   boardId: string;
 }
 
+interface IEditForm {
+  editToDo: string;
+}
+
 const DraggableCard = ({
   toDoId,
   toDoText,
   index,
   boardId,
 }: IDraggableCardProps) => {
-  const onEdit = () => {};
+  const setBoard = useSetRecoilState(boardState);
+  const [isEdit, setIsEdit] = useState(false);
+  const { register, handleSubmit, setFocus, reset } = useForm<IEditForm>();
+
+  const onShowEdit = () => {
+    setIsEdit(true);
+    setFocus("editToDo");
+  };
+
+  // toDo 수정 완료하는 함수
+  const onEdlit = ({ editToDo }: IEditForm) => {
+    setIsEdit(false);
+
+    // recoil state 업데이트
+    setBoard((currentBoard) => {
+      const updatedBoards = [...currentBoard];
+      const targetBoardIndex = updatedBoards.findIndex(
+        (board) => board.title === boardId
+      );
+
+      if (targetBoardIndex !== -1) {
+        // 해당 board의 할 일 목록에서 수정하려는 toDoId를 가진 항목의 인덱스 찾기
+        const indexToDoEdit = updatedBoards[targetBoardIndex].content.findIndex(
+          (toDo) => toDo.id === toDoId
+        );
+
+        // 해당 toDoId를 가진 항목이 현재 board의 할 일 목록에 존재하는 경우
+        if (indexToDoEdit !== -1) {
+          // 현재 board의 할 일 목록의 복사본
+          const updatedContent = [...updatedBoards[targetBoardIndex].content];
+          // 해당 항목을 수정하고 재할당
+          updatedContent[indexToDoEdit] = {
+            ...updatedContent[indexToDoEdit],
+            text: editToDo,
+          };
+
+          updatedBoards[targetBoardIndex] = {
+            ...updatedBoards[targetBoardIndex],
+            content: updatedContent,
+          };
+        }
+      }
+
+      return updatedBoards;
+    });
+
+    reset();
+  };
 
   const onDelete = useRecoilCallback(({ set }) => () => {
     set(boardState, (prevBoardState: IBoard[]) => {
@@ -49,20 +101,43 @@ const DraggableCard = ({
     });
   });
 
+  const onCancelEdit = () => {
+    setIsEdit(false);
+    reset();
+  };
+
   return (
     <Draggable draggableId={toDoId + ""} index={index}>
       {(provided, snapshot) => (
         <style.Card
           $isDragging={snapshot.isDragging}
+          $isEdit={isEdit}
           ref={provided.innerRef}
           {...provided.dragHandleProps}
           {...provided.draggableProps}
         >
-          <p>{toDoText}</p>
-          <style.IconContainer>
-            <style.EditIcStyle onClick={onEdit} />
-            <style.DeleteIcStyle onClick={onDelete} />
-          </style.IconContainer>
+          {!isEdit && (
+            <>
+              <p>{toDoText}</p>
+              <style.IconContainer>
+                <style.EditIcStyle onClick={onShowEdit} />
+                <style.DeleteIcStyle onClick={onDelete} />
+              </style.IconContainer>
+            </>
+          )}
+          {isEdit && (
+            <>
+              <style.EditForm onSubmit={handleSubmit(onEdlit)}>
+                <input
+                  {...register("editToDo", { required: true })}
+                  type="text"
+                  placeholder="Type here"
+                  defaultValue={toDoText}
+                />
+                <style.EditCancelBtn onClick={onCancelEdit} />
+              </style.EditForm>
+            </>
+          )}
         </style.Card>
       )}
     </Draggable>

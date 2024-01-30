@@ -18,6 +18,7 @@ export const Card = styled.div<{ $isDragging: boolean; $isEdit: boolean }>`
   align-items: center;
   gap: 4px;
   opacity: ${(props) => (props.$isDragging ? 0.7 : 1)};
+  transition: background-color 0.3 ease, opacity 0.3 ease, box-shadow 0.3 ease;
 
   p {
     color: ${(props) => (props.$isEdit ? "black" : "white")};
