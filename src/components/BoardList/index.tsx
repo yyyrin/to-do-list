@@ -3,6 +3,8 @@ import { boardState } from "../../atoms";
 import { DragDropContext, DropResult } from "react-beautiful-dnd";
 import * as style from "./styles";
 import Board from "../Board";
+import Lottie from "lottie-react";
+import EmptyLottie from "../../assets/emptyLottie.json";
 
 const BoardList = () => {
   const [boards, setBoards] = useRecoilState(boardState);
@@ -68,15 +70,25 @@ const BoardList = () => {
 
   return (
     <DragDropContext onDragEnd={onDragEnd}>
-      <style.Boards>
-        {boards.map((board) => (
-          <Board
-            boardId={board.title}
-            key={board.title}
-            toDos={board.content}
-          />
-        ))}
-      </style.Boards>
+      {boards.length ? (
+        <style.Boards>
+          {boards.map((board) => (
+            <Board
+              boardId={board.title}
+              key={board.title}
+              toDos={board.content}
+            />
+          ))}
+        </style.Boards>
+      ) : (
+        <style.Wrapper>
+          <p>The board is empty.</p>
+          <p>Please create a new board!</p>
+          <style.LottieContainer>
+            <Lottie animationData={EmptyLottie} />
+          </style.LottieContainer>
+        </style.Wrapper>
+      )}
     </DragDropContext>
   );
 };
