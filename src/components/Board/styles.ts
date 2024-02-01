@@ -12,6 +12,7 @@ export const Wrapper = styled.div`
   border: 3px solid black;
   overflow: hidden;
   max-width: 100%;
+  margin-right: 16px;
 `;
 
 export const TitleContainer = styled.div`
