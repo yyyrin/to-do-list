@@ -1,6 +1,11 @@
 import { useRecoilState } from "recoil";
 import { boardState } from "../../atoms";
-import { DragDropContext, DropResult } from "react-beautiful-dnd";
+import {
+  DragDropContext,
+  Draggable,
+  DropResult,
+  Droppable,
+} from "react-beautiful-dnd";
 import * as style from "./styles";
 import Board from "../Board";
 import Lottie from "lottie-react";
@@ -10,76 +15,108 @@ const BoardList = () => {
   const [boards, setBoards] = useRecoilState(boardState);
 
   // 드래그가 끝났을 때 실행되는 함수
-  const onDragEnd = ({ destination, source }: DropResult) => {
+  const onDragEnd = ({ destination, source, type }: DropResult) => {
     // 드래그를 시작한 위치와 같은 위치로 돌아오는 경우
     if (!destination) return;
 
-    // 같은 board 내에서의 이동
-    if (destination?.droppableId === source.droppableId) {
-      setBoards((currentBoards) => {
-        const updatedBoards = [...currentBoards];
-        const sourceBoard = updatedBoards.find(
-          (board) => board.title === source.droppableId
-        );
-        if (sourceBoard) {
-          const updatedContent = [...sourceBoard.content];
-          const [removedItem] = updatedContent.splice(source.index, 1);
-          updatedContent.splice(destination.index, 0, removedItem);
-
-          return updatedBoards.map((board) =>
-            board.title === source.droppableId
-              ? { ...board, content: updatedContent }
-              : board
-          );
-        }
-
+    // board 이동하는 경우
+    if (type === "board") {
+      setBoards((currentBoard) => {
+        const updatedBoards = [...currentBoard];
+        const [movedBoard] = updatedBoards.splice(source.index, 1);
+        updatedBoards.splice(destination.index, 0, movedBoard);
         return updatedBoards;
       });
     }
 
-    // 다른 board로의 이동
-    if (destination.droppableId !== source.droppableId) {
-      setBoards((currentBoards) => {
-        const updatedBoards = [...currentBoards];
-        const sourceBoard = updatedBoards.find(
-          (board) => board.title === source.droppableId
-        );
-        const destinationBoard = updatedBoards.find(
-          (board) => board.title === destination.droppableId
-        );
-        if (sourceBoard && destinationBoard) {
-          const updatedSourceContent = [...sourceBoard.content];
-          const updatedDestinationContent = [...destinationBoard.content];
-
-          const [removedItem] = updatedSourceContent.splice(source.index, 1);
-          updatedDestinationContent.splice(destination.index, 0, removedItem);
-
-          return updatedBoards.map((board) =>
-            board.title === source.droppableId
-              ? { ...board, content: updatedSourceContent }
-              : board.title === destination.droppableId
-              ? { ...board, content: updatedDestinationContent }
-              : board
+    // card 이동하는 경우
+    if (type === "card") {
+      // 같은 board 내에서의 이동
+      if (destination?.droppableId === source.droppableId) {
+        setBoards((currentBoards) => {
+          const updatedBoards = [...currentBoards];
+          const sourceBoard = updatedBoards.find(
+            (board) => board.title === source.droppableId
           );
-        }
+          if (sourceBoard) {
+            const updatedContent = [...sourceBoard.content];
+            const [removedItem] = updatedContent.splice(source.index, 1);
+            updatedContent.splice(destination.index, 0, removedItem);
 
-        return updatedBoards;
-      });
+            return updatedBoards.map((board) =>
+              board.title === source.droppableId
+                ? { ...board, content: updatedContent }
+                : board
+            );
+          }
+
+          return updatedBoards;
+        });
+      }
+
+      // 다른 board로의 이동
+      if (destination.droppableId !== source.droppableId) {
+        setBoards((currentBoards) => {
+          const updatedBoards = [...currentBoards];
+          const sourceBoard = updatedBoards.find(
+            (board) => board.title === source.droppableId
+          );
+          const destinationBoard = updatedBoards.find(
+            (board) => board.title === destination.droppableId
+          );
+          if (sourceBoard && destinationBoard) {
+            const updatedSourceContent = [...sourceBoard.content];
+            const updatedDestinationContent = [...destinationBoard.content];
+
+            const [removedItem] = updatedSourceContent.splice(source.index, 1);
+            updatedDestinationContent.splice(destination.index, 0, removedItem);
+
+            return updatedBoards.map((board) =>
+              board.title === source.droppableId
+                ? { ...board, content: updatedSourceContent }
+                : board.title === destination.droppableId
+                ? { ...board, content: updatedDestinationContent }
+                : board
+            );
+          }
+
+          return updatedBoards;
+        });
+      }
     }
   };
 
   return (
     <DragDropContext onDragEnd={onDragEnd}>
       {boards.length ? (
-        <style.Boards>
-          {boards.map((board) => (
-            <Board
-              title={board.title}
-              key={board.title}
-              content={board.content}
-            />
-          ))}
-        </style.Boards>
+        <Droppable droppableId="boardsArea" type="board" direction="horizontal">
+          {(provided) => (
+            <style.Boards ref={provided.innerRef} {...provided.droppableProps}>
+              {boards.map((board, index) => (
+                <Draggable
+                  draggableId={`board-${index}`}
+                  index={index}
+                  key={`board-${index}`}
+                >
+                  {(provided) => (
+                    <div
+                      ref={provided.innerRef}
+                      {...provided.dragHandleProps}
+                      {...provided.draggableProps}
+                    >
+                      <Board
+                        title={board.title}
+                        key={board.title}
+                        content={board.content}
+                      />
+                    </div>
+                  )}
+                </Draggable>
+              ))}
+              {provided.placeholder}
+            </style.Boards>
+          )}
+        </Droppable>
       ) : (
         <style.Wrapper>
           <p>The board is empty.</p>
