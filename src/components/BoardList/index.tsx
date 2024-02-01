@@ -74,9 +74,9 @@ const BoardList = () => {
         <style.Boards>
           {boards.map((board) => (
             <Board
-              boardId={board.title}
+              title={board.title}
               key={board.title}
-              toDos={board.content}
+              content={board.content}
             />
           ))}
         </style.Boards>

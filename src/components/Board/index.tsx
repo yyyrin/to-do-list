@@ -1,20 +1,15 @@
 import { useForm } from "react-hook-form";
 import { Droppable } from "react-beautiful-dnd";
 import DraggableCard from "../DraggableCard";
-import { ITodo, boardState } from "../../atoms";
+import { IBoard, ITodo, boardState } from "../../atoms";
 import { useRecoilState } from "recoil";
 import * as style from "./styles";
-
-interface IBoardProps {
-  toDos: ITodo[];
-  boardId: string;
-}
 
 interface IForm {
   toDo: string;
 }
 
-const Board = ({ toDos, boardId }: IBoardProps) => {
+const Board = ({ content, title }: IBoard) => {
   const [boards, setBoards] = useRecoilState(boardState);
   const { register, setValue, handleSubmit } = useForm<IForm>();
 
@@ -30,7 +25,7 @@ const Board = ({ toDos, boardId }: IBoardProps) => {
     setBoards((currentBoards) => {
       const updatedBoards = [...currentBoards];
       const targetBoardIndex = updatedBoards.findIndex(
-        (board) => board.title === boardId
+        (board) => board.title === title
       );
 
       if (targetBoardIndex !== -1) {
@@ -49,7 +44,7 @@ const Board = ({ toDos, boardId }: IBoardProps) => {
 
   // board 삭제
   const onDelete = () => {
-    const updatedBoards = boards.filter((board) => board.title !== boardId);
+    const updatedBoards = boards.filter((board) => board.title !== title);
 
     setBoards(updatedBoards);
   };
@@ -57,7 +52,7 @@ const Board = ({ toDos, boardId }: IBoardProps) => {
   return (
     <style.Wrapper>
       <style.TitleContainer>
-        <h2>{boardId}</h2>
+        <h2>{title}</h2>
         <style.DeleteIcStyle onClick={onDelete} />
       </style.TitleContainer>
       <style.Form onSubmit={handleSubmit(onValid)}>
@@ -67,16 +62,16 @@ const Board = ({ toDos, boardId }: IBoardProps) => {
           placeholder={`Add task on task`}
         />
       </style.Form>
-      <Droppable droppableId={boardId}>
+      <Droppable droppableId={title} type="card">
         {(provided) => (
           <style.Area ref={provided.innerRef} {...provided.droppableProps}>
-            {toDos.map((toDo, index) => (
+            {content.map((toDo, index) => (
               <DraggableCard
                 key={toDo.id}
                 index={index}
                 toDoId={toDo.id}
                 toDoText={toDo.text}
-                boardId={boardId}
+                title={title}
               />
             ))}
             {provided.placeholder}

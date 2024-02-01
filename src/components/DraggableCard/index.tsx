@@ -9,7 +9,7 @@ interface IDraggableCardProps {
   toDoId: number;
   toDoText: string;
   index: number;
-  boardId: string;
+  title: string;
 }
 
 interface IEditForm {
@@ -20,7 +20,7 @@ const DraggableCard = ({
   toDoId,
   toDoText,
   index,
-  boardId,
+  title,
 }: IDraggableCardProps) => {
   const setBoard = useSetRecoilState(boardState);
   const [isEdit, setIsEdit] = useState(false);
@@ -44,7 +44,7 @@ const DraggableCard = ({
     setBoard((currentBoard) => {
       const updatedBoards = [...currentBoard];
       const targetBoardIndex = updatedBoards.findIndex(
-        (board) => board.title === boardId
+        (board) => board.title === title
       );
 
       if (targetBoardIndex !== -1) {
@@ -80,7 +80,7 @@ const DraggableCard = ({
     set(boardState, (prevBoardState: IBoard[]) => {
       const updatedBoards = [...prevBoardState];
       const targetBoardIndex = updatedBoards.findIndex(
-        (board) => board.title === boardId
+        (board) => board.title === title
       );
 
       if (targetBoardIndex !== -1) {
