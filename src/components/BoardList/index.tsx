@@ -3,6 +3,7 @@ import { boardState } from "../../atoms";
 import {
   DragDropContext,
   Draggable,
+  DraggableLocation,
   DropResult,
   Droppable,
 } from "react-beautiful-dnd";
@@ -23,96 +24,126 @@ const BoardList = () => {
     }
   };
 
-  // 드래그가 끝났을 때 실행되는 함수
   const onDragEnd = ({ destination, source, type }: DropResult) => {
     setTrashBinShow(false);
-    // 드래그를 시작한 위치와 같은 위치로 돌아오는 경우
     if (!destination) return;
 
-    // board 이동하는 경우
     if (type === "board") {
-      setBoards((currentBoard) => {
-        const updatedBoards = [...currentBoard];
-        const [movedBoard] = updatedBoards.splice(source.index, 1);
-        updatedBoards.splice(destination.index, 0, movedBoard);
-        return updatedBoards;
-      });
+      handleBoardMove(source, destination);
     }
 
-    // card 이동하는 경우
     if (type === "card") {
-      // 쓰레기통으로 옮긴 경우
-      if (destination.droppableId === "trashbin") {
-        setBoards((currentBoards) => {
-          const updatedBoards = [...currentBoards];
-          const targetBoardIndex = updatedBoards.findIndex(
-            (board) => board.title === source.droppableId
-          );
-          const targetBoardContent = [
-            ...updatedBoards[targetBoardIndex].content,
-          ];
-          targetBoardContent.splice(source.index, 1);
-          updatedBoards[targetBoardIndex] = {
-            title: source.droppableId,
-            content: [...targetBoardContent],
-          };
-          return [...updatedBoards];
-        });
-      }
-
-      // 같은 board 내에서의 이동
-      if (destination?.droppableId === source.droppableId) {
-        setBoards((currentBoards) => {
-          const updatedBoards = [...currentBoards];
-          const sourceBoard = updatedBoards.find(
-            (board) => board.title === source.droppableId
-          );
-          if (sourceBoard) {
-            const updatedContent = [...sourceBoard.content];
-            const [removedItem] = updatedContent.splice(source.index, 1);
-            updatedContent.splice(destination.index, 0, removedItem);
-
-            return updatedBoards.map((board) =>
-              board.title === source.droppableId
-                ? { ...board, content: updatedContent }
-                : board
-            );
-          }
-
-          return updatedBoards;
-        });
-      }
-
-      // 다른 board로의 이동
-      if (destination.droppableId !== source.droppableId) {
-        setBoards((currentBoards) => {
-          const updatedBoards = [...currentBoards];
-          const sourceBoard = updatedBoards.find(
-            (board) => board.title === source.droppableId
-          );
-          const destinationBoard = updatedBoards.find(
-            (board) => board.title === destination.droppableId
-          );
-          if (sourceBoard && destinationBoard) {
-            const updatedSourceContent = [...sourceBoard.content];
-            const updatedDestinationContent = [...destinationBoard.content];
-
-            const [removedItem] = updatedSourceContent.splice(source.index, 1);
-            updatedDestinationContent.splice(destination.index, 0, removedItem);
-
-            return updatedBoards.map((board) =>
-              board.title === source.droppableId
-                ? { ...board, content: updatedSourceContent }
-                : board.title === destination.droppableId
-                ? { ...board, content: updatedDestinationContent }
-                : board
-            );
-          }
-
-          return updatedBoards;
-        });
-      }
+      handleCardMove(source, destination);
     }
+  };
+
+  // board 이동 처리 함수
+  const handleBoardMove = (
+    source: DraggableLocation,
+    destination: DraggableLocation
+  ) => {
+    setBoards((currentBoard) => {
+      const updatedBoards = [...currentBoard];
+      const [movedBoard] = updatedBoards.splice(source.index, 1);
+      updatedBoards.splice(destination.index, 0, movedBoard);
+      return updatedBoards;
+    });
+  };
+
+  // card 이동 처리 함수
+  const handleCardMove = (
+    source: DraggableLocation,
+    destination: DraggableLocation
+  ) => {
+    if (destination.droppableId === "trashbin") {
+      handleTrashBinMove(source);
+    }
+
+    if (destination.droppableId === source.droppableId) {
+      handleSameBoardMove(source, destination);
+    }
+
+    if (destination.droppableId !== source.droppableId) {
+      handleDifferentBoardMove(source, destination);
+    }
+  };
+
+  // 쓰레기통 이동 처리 함수
+  const handleTrashBinMove = (source: DraggableLocation) => {
+    setBoards((currentBoards) => {
+      const updatedBoards = [...currentBoards];
+      const targetBoardIndex = updatedBoards.findIndex(
+        (board) => board.title === source.droppableId
+      );
+      const targetBoardContent = [...updatedBoards[targetBoardIndex].content];
+
+      targetBoardContent.splice(source.index, 1);
+      updatedBoards[targetBoardIndex] = {
+        title: source.droppableId,
+        content: [...targetBoardContent],
+      };
+      return [...updatedBoards];
+    });
+  };
+
+  // 같은 board 내에서의 이동 처리 함수
+  const handleSameBoardMove = (
+    source: DraggableLocation,
+    destination: DraggableLocation
+  ) => {
+    setBoards((currentBoards) => {
+      const updatedBoards = [...currentBoards];
+      const sourceBoard = updatedBoards.find(
+        (board) => board.title === source.droppableId
+      );
+
+      if (sourceBoard) {
+        const updatedContent = [...sourceBoard.content];
+        const [removedItem] = updatedContent.splice(source.index, 1);
+        updatedContent.splice(destination.index, 0, removedItem);
+
+        return updatedBoards.map((board) =>
+          board.title === source.droppableId
+            ? { ...board, content: updatedContent }
+            : board
+        );
+      }
+
+      return updatedBoards;
+    });
+  };
+
+  // 다른 board로의 이동 처리 함수
+  const handleDifferentBoardMove = (
+    source: DraggableLocation,
+    destination: DraggableLocation
+  ) => {
+    setBoards((currentBoards) => {
+      const updatedBoards = [...currentBoards];
+      const sourceBoard = updatedBoards.find(
+        (board) => board.title === source.droppableId
+      );
+      const destinationBoard = updatedBoards.find(
+        (board) => board.title === destination.droppableId
+      );
+
+      if (sourceBoard && destinationBoard) {
+        const updatedSourceContent = [...sourceBoard.content];
+        const updatedDestinationContent = [...destinationBoard.content];
+        const [removedItem] = updatedSourceContent.splice(source.index, 1);
+        updatedDestinationContent.splice(destination.index, 0, removedItem);
+
+        return updatedBoards.map((board) =>
+          board.title === source.droppableId
+            ? { ...board, content: updatedSourceContent }
+            : board.title === destination.droppableId
+            ? { ...board, content: updatedDestinationContent }
+            : board
+        );
+      }
+
+      return updatedBoards;
+    });
   };
 
   return (
