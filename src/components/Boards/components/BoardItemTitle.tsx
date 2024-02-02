@@ -21,7 +21,6 @@ const BoardItemTitle = ({ title }: IBoardTitleProps) => {
     setIsEditTitle(true);
   };
 
-  // board title 수정
   const onEditTitle = ({ editTitle }: EditBoardForm) => {
     setIsEditTitle(false);
 
@@ -46,7 +45,6 @@ const BoardItemTitle = ({ title }: IBoardTitleProps) => {
     setIsEditTitle(false);
   };
 
-  // board 삭제
   const onDelete = () => {
     const updatedBoards = boards.filter((board) => board.title !== title);
     setBoards(updatedBoards);
