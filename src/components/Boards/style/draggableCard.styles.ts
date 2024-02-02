@@ -1,7 +1,7 @@
 import styled, { css } from "styled-components";
-import DeleteIc from "../../assets/delteIc.svg?react";
-import EditIc from "../../assets/editIc.svg?react";
-import FilledDeleteIc from "../../assets/filledDeleteIc.svg?react";
+import DeleteIc from "../../../assets/delteIc.svg?react";
+import EditIc from "../../../assets/editIc.svg?react";
+import FilledDeleteIc from "../../../assets/filledDeleteIc.svg?react";
 
 const IconStyle = css`
   width: 10px;
