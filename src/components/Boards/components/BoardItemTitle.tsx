@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import * as style from "../style/boardTitle.styles";
+import * as style from "../style/boardItemTitle.styles";
 import { useRecoilState } from "recoil";
 import { boardState } from "../../../atoms";
 import { useForm } from "react-hook-form";
@@ -12,7 +12,7 @@ interface EditBoardForm {
   editTitle: string;
 }
 
-const BoardTitle = ({ title }: IBoardTitleProps) => {
+const BoardItemTitle = ({ title }: IBoardTitleProps) => {
   const [boards, setBoards] = useRecoilState(boardState);
   const [isEditTitle, setIsEditTitle] = useState(false);
   const { register, handleSubmit, setFocus, reset } = useForm<EditBoardForm>();
@@ -85,4 +85,4 @@ const BoardTitle = ({ title }: IBoardTitleProps) => {
   );
 };
 
-export default BoardTitle;
+export default BoardItemTitle;

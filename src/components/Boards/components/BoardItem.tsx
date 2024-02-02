@@ -2,7 +2,7 @@ import { useForm } from "react-hook-form";
 import { IBoard, ITodo, boardState } from "../../../atoms";
 import { useSetRecoilState } from "recoil";
 import * as style from "../style/boardItem.styles";
-import BoardTitle from "./BoardTitle";
+import BoardItemTitle from "./BoardItemTitle";
 import { Droppable } from "react-beautiful-dnd";
 import DraggableCard from "./DraggableCard";
 
@@ -45,7 +45,7 @@ const BoardItem = ({ content, title }: IBoard) => {
 
   return (
     <style.Wrapper>
-      <BoardTitle title={title} />
+      <BoardItemTitle title={title} />
       <style.Form onSubmit={handleSubmit(onToDoCreate)}>
         <input
           {...register("toDo", { required: true })}
