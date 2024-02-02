@@ -1,6 +1,6 @@
 import styled from "styled-components";
-import BoardList from "./components/BoardList";
 import Header from "./components/Header";
+import Boards from "./components/Boards";
 
 const AppContainer = styled.div`
   display: flex;
@@ -14,7 +14,7 @@ function App() {
   return (
     <AppContainer>
       <Header />
-      <BoardList />
+      <Boards />
     </AppContainer>
   );
 }

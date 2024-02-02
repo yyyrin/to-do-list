@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import * as style from "./styles";
+import * as style from "../style/boardTitle.styles";
 import { useRecoilState } from "recoil";
-import { boardState } from "../../atoms";
+import { boardState } from "../../../atoms";
 import { useForm } from "react-hook-form";
 
 interface IBoardTitleProps {

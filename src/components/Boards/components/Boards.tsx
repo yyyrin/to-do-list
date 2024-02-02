@@ -1,5 +1,5 @@
 import { useRecoilState } from "recoil";
-import { boardState } from "../../atoms";
+import { boardState } from "../../../atoms";
 import {
   DragDropContext,
   Draggable,
@@ -7,14 +7,14 @@ import {
   DropResult,
   Droppable,
 } from "react-beautiful-dnd";
-import * as style from "./styles";
-import Board from "../Board";
+import * as style from "../style/boards.styles";
 import Lottie from "lottie-react";
-import EmptyLottie from "../../assets/emptyLottie.json";
+import EmptyLottie from "../../../assets/emptyLottie.json";
 import { useState } from "react";
-import TrashBin from "../TrashBin";
+import TrashBin from "../../TrashBin";
+import BoardItem from "./BoardItem";
 
-const BoardList = () => {
+const Boards = () => {
   const [boards, setBoards] = useRecoilState(boardState);
   const [trashBinShow, setTrashBinShow] = useState(false);
 
@@ -172,7 +172,7 @@ const BoardList = () => {
                         {...provided.dragHandleProps}
                         {...provided.draggableProps}
                       >
-                        <Board
+                        <BoardItem
                           title={board.title}
                           key={board.title}
                           content={board.content}
@@ -200,7 +200,7 @@ const BoardList = () => {
   );
 };
 
-export default BoardList;
+export default Boards;
 
 /* react-beautiful-dnd
 

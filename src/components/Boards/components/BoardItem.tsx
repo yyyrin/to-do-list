@@ -1,21 +1,21 @@
 import { useForm } from "react-hook-form";
 import { Droppable } from "react-beautiful-dnd";
-import DraggableCard from "../DraggableCard";
-import { IBoard, ITodo, boardState } from "../../atoms";
+import DraggableCard from "../../DraggableCard";
+import { IBoard, ITodo, boardState } from "../../../atoms";
 import { useSetRecoilState } from "recoil";
-import * as style from "./styles";
-import BoardTitle from "../BoardTitle";
+import * as style from "../style/boardItem.styles";
+import BoardTitle from "./BoardTitle";
 
-interface IForm {
+interface ToDoForm {
   toDo: string;
 }
 
-const Board = ({ content, title }: IBoard) => {
+const BoardItem = ({ content, title }: IBoard) => {
   const setBoards = useSetRecoilState(boardState);
-  const { register, setValue, handleSubmit } = useForm<IForm>();
+  const { register, setValue, handleSubmit } = useForm<ToDoForm>();
 
   // 폼 제출 시 호출되는 함수
-  const onValid = ({ toDo }: IForm) => {
+  const onValid = ({ toDo }: ToDoForm) => {
     // 새로운 toDo 생성
     const newToDo: ITodo = {
       id: Date.now(),
@@ -74,7 +74,7 @@ const Board = ({ content, title }: IBoard) => {
   );
 };
 
-export default Board;
+export default BoardItem;
 
 /* Droppablestate snapshot
 
