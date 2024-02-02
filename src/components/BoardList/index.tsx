@@ -31,6 +31,25 @@ const BoardList = () => {
 
     // card 이동하는 경우
     if (type === "card") {
+      // 쓰레기통으로 옮긴 경우
+      if (destination.droppableId === "trashbin") {
+        setBoards((currentBoards) => {
+          const updatedBoards = [...currentBoards];
+          const targetBoardIndex = updatedBoards.findIndex(
+            (board) => board.title === source.droppableId
+          );
+          const targetBoardContent = [
+            ...updatedBoards[targetBoardIndex].content,
+          ];
+          targetBoardContent.splice(source.index, 1);
+          updatedBoards[targetBoardIndex] = {
+            title: source.droppableId,
+            content: [...targetBoardContent],
+          };
+          return [...updatedBoards];
+        });
+      }
+
       // 같은 board 내에서의 이동
       if (destination?.droppableId === source.droppableId) {
         setBoards((currentBoards) => {
@@ -127,7 +146,16 @@ const BoardList = () => {
           </Droppable>
           <div>
             <style.TrashBin>
-              <style.BinIcStyle />
+              <Droppable droppableId="trashbin" type="card">
+                {(provided, snapshot) => (
+                  <div ref={provided.innerRef} {...provided.droppableProps}>
+                    <style.BinIcStyle
+                      $isDraggingOver={snapshot.isDraggingOver}
+                    />
+                    {provided.placeholder}
+                  </div>
+                )}
+              </Droppable>
             </style.TrashBin>
           </div>
         </>

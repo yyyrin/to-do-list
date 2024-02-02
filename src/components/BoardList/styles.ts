@@ -34,24 +34,29 @@ export const LottieContainer = styled.div`
   height: 200px;
 `;
 
-export const BinIcStyle = styled(BinIc)`
+export const BinIcStyle = styled(BinIc)<{ $isDraggingOver: boolean }>`
   width: 40px;
   height: 40px;
   transition: fill 0.3s ease;
+  fill: ${(props) => (props.$isDraggingOver ? "red" : "black")};
+  position: fixed;
+  bottom: 40px;
+  right: 50px;
 `;
 
 export const TrashBin = styled.div`
   width: 60px;
   height: 60px;
-  border-radius: 30px;
+  border-radius: 50%;
   border: 3px solid black;
-  display: flex;
   justify-content: center;
   align-items: center;
   position: fixed;
   bottom: 30px;
   right: 40px;
-  transition: border-color 0.3s ease;
+  transition: all 0.15s ease;
+  display: flex;
+  opacity: 1;
   &:hover {
     border-color: red;
     ${BinIcStyle} {
