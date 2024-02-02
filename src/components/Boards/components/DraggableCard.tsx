@@ -1,8 +1,8 @@
 import { memo, useEffect, useState } from "react";
 import { Draggable } from "react-beautiful-dnd";
-import * as style from "./styles";
+import * as style from "../style/draggableCard.styles";
 import { useRecoilCallback, useSetRecoilState } from "recoil";
-import { IBoard, boardState } from "../../atoms";
+import { IBoard, boardState } from "../../../atoms";
 import { useForm } from "react-hook-form";
 
 interface IDraggableCardProps {
@@ -32,9 +32,7 @@ const DraggableCard = ({
     }
   }, [isEdit, setFocus]);
 
-  const onShowEdit = () => {
-    setIsEdit(true);
-  };
+  const onShowEdit = () => setIsEdit(true);
 
   // toDo 수정 완료하는 함수
   const onEdlit = ({ editToDo }: IEditForm) => {
@@ -121,27 +119,24 @@ const DraggableCard = ({
           {...provided.dragHandleProps}
           {...provided.draggableProps}
         >
-          {!isEdit && (
+          {isEdit ? (
+            <style.EditForm onSubmit={handleSubmit(onEdlit)}>
+              <input
+                {...register("editToDo", { required: true })}
+                type="text"
+                placeholder="Type here"
+                defaultValue={toDoText}
+                autoComplete="off"
+              />
+              <style.EditCancelBtn onClick={onCancelEdit} />
+            </style.EditForm>
+          ) : (
             <>
               <p>{toDoText}</p>
               <style.IconContainer>
                 <style.EditIcStyle onClick={onShowEdit} />
                 <style.DeleteIcStyle onClick={onDelete} />
               </style.IconContainer>
-            </>
-          )}
-          {isEdit && (
-            <>
-              <style.EditForm onSubmit={handleSubmit(onEdlit)}>
-                <input
-                  {...register("editToDo", { required: true })}
-                  type="text"
-                  placeholder="Type here"
-                  defaultValue={toDoText}
-                  autoComplete="off"
-                />
-                <style.EditCancelBtn onClick={onCancelEdit} />
-              </style.EditForm>
             </>
           )}
         </style.Card>

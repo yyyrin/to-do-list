@@ -1,7 +1,7 @@
 import { Droppable } from "react-beautiful-dnd";
 import * as style from "../style/toDoArea.styles";
 import { ITodo } from "../../../atoms";
-import DraggableCard from "../../DraggableCard";
+import DraggableCard from "./DraggableCard";
 
 const ToDoArea = ({ content, title }: { content: ITodo[]; title: string }) => {
   return (
