@@ -1,12 +1,12 @@
 import { useForm } from "react-hook-form";
 import * as style from "../style/toDoForm.styles";
 
-interface ToDoForm {
+interface ToDoFormData {
   toDo: string;
 }
 
-const ToDoForm = ({ onValid }: { onValid: (data: ToDoForm) => void }) => {
-  const { register, handleSubmit } = useForm<ToDoForm>();
+const ToDoForm = ({ onValid }: { onValid: (data: ToDoFormData) => void }) => {
+  const { register, handleSubmit } = useForm<ToDoFormData>();
 
   return (
     <style.Form onSubmit={handleSubmit(onValid)}>

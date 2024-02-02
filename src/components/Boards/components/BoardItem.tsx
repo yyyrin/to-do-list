@@ -6,12 +6,16 @@ import BoardTitle from "./BoardTitle";
 import ToDoForm from "./ToDoForm";
 import ToDoArea from "./ToDoArea";
 
+interface ToDoFormData {
+  toDo: string;
+}
+
 const BoardItem = ({ content, title }: IBoard) => {
   const setBoards = useSetRecoilState(boardState);
-  const { setValue } = useForm<ToDoForm>();
+  const { setValue } = useForm<ToDoFormData>();
 
   // 폼 제출 시 호출되는 함수
-  const onToDoCreate = ({ toDo }: ToDoForm) => {
+  const onToDoCreate = ({ toDo }: ToDoFormData) => {
     // 새로운 toDo 생성
     const newToDo: ITodo = {
       id: Date.now(),
