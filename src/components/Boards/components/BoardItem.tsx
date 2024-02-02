@@ -1,21 +1,17 @@
 import { useForm } from "react-hook-form";
-import { Droppable } from "react-beautiful-dnd";
-import DraggableCard from "../../DraggableCard";
 import { IBoard, ITodo, boardState } from "../../../atoms";
 import { useSetRecoilState } from "recoil";
 import * as style from "../style/boardItem.styles";
 import BoardTitle from "./BoardTitle";
-
-interface ToDoForm {
-  toDo: string;
-}
+import ToDoForm from "./ToDoForm";
+import ToDoArea from "./ToDoArea";
 
 const BoardItem = ({ content, title }: IBoard) => {
   const setBoards = useSetRecoilState(boardState);
-  const { register, setValue, handleSubmit } = useForm<ToDoForm>();
+  const { setValue } = useForm<ToDoForm>();
 
   // 폼 제출 시 호출되는 함수
-  const onValid = ({ toDo }: ToDoForm) => {
+  const onToDoCreate = ({ toDo }: ToDoForm) => {
     // 새로운 toDo 생성
     const newToDo: ITodo = {
       id: Date.now(),
@@ -46,30 +42,8 @@ const BoardItem = ({ content, title }: IBoard) => {
   return (
     <style.Wrapper>
       <BoardTitle title={title} />
-      <style.Form onSubmit={handleSubmit(onValid)}>
-        <input
-          {...register("toDo", { required: true })}
-          type="text"
-          placeholder={`Add task on task`}
-          autoComplete="off"
-        />
-      </style.Form>
-      <Droppable droppableId={title} type="card">
-        {(provided) => (
-          <style.Area ref={provided.innerRef} {...provided.droppableProps}>
-            {content.map((toDo, index) => (
-              <DraggableCard
-                key={toDo.id}
-                index={index}
-                toDoId={toDo.id}
-                toDoText={toDo.text}
-                title={title}
-              />
-            ))}
-            {provided.placeholder}
-          </style.Area>
-        )}
-      </Droppable>
+      <ToDoForm onValid={onToDoCreate} />
+      <ToDoArea content={content} title={title} />
     </style.Wrapper>
   );
 };

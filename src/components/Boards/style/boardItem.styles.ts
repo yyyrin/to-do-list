@@ -13,29 +13,3 @@ export const Wrapper = styled.div`
   max-width: 100%;
   margin-right: 16px;
 `;
-
-export const Form = styled.form`
-  width: 100%;
-  padding: 16px 20px;
-
-  input {
-    width: 100%;
-    border: none;
-    border-bottom: 3px solid ${(props) => props.theme.lineColor};
-    outline: none;
-    padding-bottom: 4px;
-    background-color: transparent;
-    font-size: 12px;
-    font-weight: 500;
-    text-overflow: ellipsis;
-    overflow: hidden;
-    white-space: nowrap;
-  }
-`;
-
-export const Area = styled.div`
-  background-color: transparent;
-  flex-grow: 1;
-  transition: all 0.3s ease-in-out;
-  padding: 0px 20px 14px 20px;
-`;
