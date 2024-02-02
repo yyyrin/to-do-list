@@ -89,34 +89,48 @@ const BoardList = () => {
   return (
     <DragDropContext onDragEnd={onDragEnd}>
       {boards.length ? (
-        <Droppable droppableId="boardsArea" type="board" direction="horizontal">
-          {(provided) => (
-            <style.Boards ref={provided.innerRef} {...provided.droppableProps}>
-              {boards.map((board, index) => (
-                <Draggable
-                  draggableId={`board-${index}`}
-                  index={index}
-                  key={`board-${index}`}
-                >
-                  {(provided) => (
-                    <div
-                      ref={provided.innerRef}
-                      {...provided.dragHandleProps}
-                      {...provided.draggableProps}
-                    >
-                      <Board
-                        title={board.title}
-                        key={board.title}
-                        content={board.content}
-                      />
-                    </div>
-                  )}
-                </Draggable>
-              ))}
-              {provided.placeholder}
-            </style.Boards>
-          )}
-        </Droppable>
+        <>
+          <Droppable
+            droppableId="boardsArea"
+            type="board"
+            direction="horizontal"
+          >
+            {(provided) => (
+              <style.Boards
+                ref={provided.innerRef}
+                {...provided.droppableProps}
+              >
+                {boards.map((board, index) => (
+                  <Draggable
+                    draggableId={`board-${index}`}
+                    index={index}
+                    key={`board-${index}`}
+                  >
+                    {(provided) => (
+                      <div
+                        ref={provided.innerRef}
+                        {...provided.dragHandleProps}
+                        {...provided.draggableProps}
+                      >
+                        <Board
+                          title={board.title}
+                          key={board.title}
+                          content={board.content}
+                        />
+                      </div>
+                    )}
+                  </Draggable>
+                ))}
+                {provided.placeholder}
+              </style.Boards>
+            )}
+          </Droppable>
+          <div>
+            <style.TrashBin>
+              <style.BinIcStyle />
+            </style.TrashBin>
+          </div>
+        </>
       ) : (
         <style.Wrapper>
           <p>The board is empty.</p>
