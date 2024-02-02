@@ -2,15 +2,16 @@ import { useForm } from "react-hook-form";
 import { Droppable } from "react-beautiful-dnd";
 import DraggableCard from "../DraggableCard";
 import { IBoard, ITodo, boardState } from "../../atoms";
-import { useRecoilState } from "recoil";
+import { useSetRecoilState } from "recoil";
 import * as style from "./styles";
+import BoardTitle from "../BoardTitle";
 
 interface IForm {
   toDo: string;
 }
 
 const Board = ({ content, title }: IBoard) => {
-  const [boards, setBoards] = useRecoilState(boardState);
+  const setBoards = useSetRecoilState(boardState);
   const { register, setValue, handleSubmit } = useForm<IForm>();
 
   // 폼 제출 시 호출되는 함수
@@ -42,19 +43,9 @@ const Board = ({ content, title }: IBoard) => {
     setValue("toDo", "");
   };
 
-  // board 삭제
-  const onDelete = () => {
-    const updatedBoards = boards.filter((board) => board.title !== title);
-
-    setBoards(updatedBoards);
-  };
-
   return (
     <style.Wrapper>
-      <style.TitleContainer>
-        <h2>{title}</h2>
-        <style.DeleteIcStyle onClick={onDelete} />
-      </style.TitleContainer>
+      <BoardTitle title={title} />
       <style.Form onSubmit={handleSubmit(onValid)}>
         <input
           {...register("toDo", { required: true })}
