@@ -11,6 +11,7 @@ import Board from "../Board";
 import Lottie from "lottie-react";
 import EmptyLottie from "../../assets/emptyLottie.json";
 import { useState } from "react";
+import TrashBin from "../TrashBin";
 
 const BoardList = () => {
   const [boards, setBoards] = useRecoilState(boardState);
@@ -153,20 +154,7 @@ const BoardList = () => {
               </style.Boards>
             )}
           </Droppable>
-          <div>
-            <style.TrashBin $trashBinShow={trashBinShow}>
-              <Droppable droppableId="trashbin" type="card">
-                {(provided, snapshot) => (
-                  <div ref={provided.innerRef} {...provided.droppableProps}>
-                    <style.BinIcStyle
-                      $isDraggingOver={snapshot.isDraggingOver}
-                    />
-                    {provided.placeholder}
-                  </div>
-                )}
-              </Droppable>
-            </style.TrashBin>
-          </div>
+          <TrashBin trashBinShow={trashBinShow} />
         </>
       ) : (
         <style.Wrapper>
