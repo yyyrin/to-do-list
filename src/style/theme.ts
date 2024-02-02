@@ -6,4 +6,8 @@ export const theme: DefaultTheme = {
   cardColor: "black",
   cardTextColor: "white",
   cardHeadColor: "#FFF458",
+  accentColor: "#FF004D",
+  semiAccentColor: "#fc81a6",
+  lineColor: "black",
+  borderFormColor: "#dddddd",
 };

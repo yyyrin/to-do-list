@@ -51,6 +51,7 @@ const Board = ({ content, title }: IBoard) => {
           {...register("toDo", { required: true })}
           type="text"
           placeholder={`Add task on task`}
+          autoComplete="off"
         />
       </style.Form>
       <Droppable droppableId={title} type="card">

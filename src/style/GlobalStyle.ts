@@ -6,6 +6,7 @@ ${Reset};
 
 body {
   line-height: 1.2;
+  overflow-x: hidden;
 }
 menu, ol, ul {
   list-style: none;

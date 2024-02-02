@@ -33,7 +33,7 @@ export const BoardForm = styled.form`
     padding: 6px;
     border: none;
     outline: none;
-    background-color: #dddddd;
+    background-color: ${(props) => props.theme.borderFormColor};
     font-size: 16px;
     font-weight: 500;
     text-overflow: ellipsis;

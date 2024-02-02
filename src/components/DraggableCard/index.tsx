@@ -138,6 +138,7 @@ const DraggableCard = ({
                   type="text"
                   placeholder="Type here"
                   defaultValue={toDoText}
+                  autoComplete="off"
                 />
                 <style.EditCancelBtn onClick={onCancelEdit} />
               </style.EditForm>

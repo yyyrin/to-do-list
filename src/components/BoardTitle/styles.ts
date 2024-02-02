@@ -3,10 +3,32 @@ import DeleteIc from "../../assets/delteIc.svg?react";
 import EditIc from "../../assets/editIc.svg?react";
 import FilledDeleteIc from "../../assets/filledDeleteIc.svg?react";
 
+const IconStyle = css`
+  width: 12px;
+  height: 12px;
+  fill: rgba(0, 0, 0, 0.5);
+  cursor: pointer;
+  transition: all 0.3 ease;
+  flex-shrink: 0;
+  opacity: 0;
+
+  &:hover {
+    fill: black;
+  }
+`;
+
+export const DeleteIcStyle = styled(DeleteIc)`
+  ${IconStyle}
+`;
+
+export const EditIcStyle = styled(EditIc)`
+  ${IconStyle}
+`;
+
 export const TitleContainer = styled.div`
-  height: 62px;
+  height: 60px;
   background-color: ${(props) => props.theme.cardHeadColor};
-  padding: 16px 20px;
+  padding: 14px 20px;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -20,7 +42,13 @@ export const TitleContainer = styled.div`
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    /* TODO: 글자 수 제한하기 */
+    line-height: 1.4;
+  }
+
+  &:hover {
+    ${DeleteIcStyle}, ${EditIcStyle} {
+      opacity: 1;
+    }
   }
 `;
 
@@ -33,7 +61,7 @@ export const EditBoardForm = styled.form`
   input {
     width: 100%;
     border: none;
-    border-bottom: 1px solid black;
+    border-bottom: 1px solid ${(props) => props.theme.lineColor};
     outline: none;
     padding-bottom: 4px;
     background-color: transparent;
@@ -52,33 +80,13 @@ export const IconContainer = styled.div`
   gap: 6px;
 `;
 
-const IconStyle = css`
-  width: 12px;
-  height: 12px;
-  fill: rgba(0, 0, 0, 0.5);
-  cursor: pointer;
-  transition: all 0.3 ease;
-  flex-shrink: 0;
-  &:hover {
-    fill: black;
-  }
-`;
-
-export const DeleteIcStyle = styled(DeleteIc)`
-  ${IconStyle}
-`;
-
-export const EditIcStyle = styled(EditIc)`
-  ${IconStyle}
-`;
-
 export const EditCancelBtn = styled(FilledDeleteIc)`
   width: 20px;
   height: 20px;
   cursor: pointer;
   flex-shrink: 0;
-  fill: rgba(255, 0, 0, 0.5);
+  fill: ${(props) => props.theme.semiAccentColor};
   &:hover {
-    fill: red;
+    fill: ${(props) => props.theme.accentColor};
   }
 `;

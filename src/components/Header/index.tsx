@@ -38,6 +38,7 @@ const Header = () => {
             {...register("board", { required: true })}
             type="text"
             placeholder={`Type board name here and press enter to create`}
+            autoComplete="off"
           />
         </style.BoardForm>
       </style.SubWrapper>

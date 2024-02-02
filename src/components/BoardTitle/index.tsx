@@ -71,6 +71,7 @@ const BoardTitle = ({ title }: IBoardTitleProps) => {
             type="text"
             placeholder="Type here"
             defaultValue={title}
+            autoComplete="off"
           />
           <style.EditCancelBtn onClick={onCancelEditTitle} />
         </style.EditBoardForm>

@@ -3,9 +3,31 @@ import DeleteIc from "../../assets/delteIc.svg?react";
 import EditIc from "../../assets/editIc.svg?react";
 import FilledDeleteIc from "../../assets/filledDeleteIc.svg?react";
 
+const IconStyle = css`
+  width: 10px;
+  height: 10px;
+  fill: grey;
+  cursor: pointer;
+  transition: all 0.3 ease;
+  flex-shrink: 0;
+  opacity: 0;
+  
+  &:hover {
+    fill: white;
+  }
+`;
+
+export const DeleteIcStyle = styled(DeleteIc)`
+  ${IconStyle}
+`;
+
+export const EditIcStyle = styled(EditIc)`
+  ${IconStyle}
+`;
+
 export const Card = styled.div<{ $isDragging: boolean; $isEdit: boolean }>`
-  height: 58px;
-  border: 2px solid black;
+  height: 56px;
+  border: 2px solid ${(props) => props.theme.lineColor};
   border-radius: 4px;
   padding: 14px 12px;
   margin-bottom: 8px;
@@ -18,27 +40,22 @@ export const Card = styled.div<{ $isDragging: boolean; $isEdit: boolean }>`
   align-items: center;
   gap: 4px;
   opacity: ${(props) => (props.$isDragging ? 0.7 : 1)};
-  transition: background-color 0.3 ease, opacity 0.3 ease, box-shadow 0.3 ease;
+  transition: all 0.3 ease;
 
   p {
     color: ${(props) => (props.$isEdit ? "black" : "white")};
-    font-size: 14px;
+    font-size: 12px;
     font-weight: 500;
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
+    line-height: 1.4;
   }
-`;
 
-const IconStyle = css`
-  width: 10px;
-  height: 10px;
-  fill: grey;
-  cursor: pointer;
-  transition: fill 0.3 ease;
-  flex-shrink: 0;
   &:hover {
-    fill: white;
+    ${DeleteIcStyle}, ${EditIcStyle} {
+      opacity: 1;
+    }
   }
 `;
 
@@ -46,14 +63,6 @@ export const IconContainer = styled.div`
   display: flex;
   flex-direction: column;
   gap: 6px;
-`;
-
-export const DeleteIcStyle = styled(DeleteIc)`
-  ${IconStyle}
-`;
-
-export const EditIcStyle = styled(EditIc)`
-  ${IconStyle}
 `;
 
 export const EditForm = styled.form`
@@ -68,7 +77,7 @@ export const EditForm = styled.form`
     border: none;
     outline: none;
     background-color: transparent;
-    font-size: 14px;
+    font-size: 12px;
     font-weight: 500;
     text-overflow: ellipsis;
     overflow: hidden;
