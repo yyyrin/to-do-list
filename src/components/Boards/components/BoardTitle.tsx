@@ -17,12 +17,6 @@ const BoardTitle = ({ title }: IBoardTitleProps) => {
   const [isEditTitle, setIsEditTitle] = useState(false);
   const { register, handleSubmit, setFocus, reset } = useForm<EditBoardForm>();
 
-  useEffect(() => {
-    if (isEditTitle) {
-      setFocus("editTitle");
-    }
-  }, [isEditTitle, setFocus]);
-
   const onShowEditTitle = () => {
     setIsEditTitle(true);
   };
@@ -46,21 +40,24 @@ const BoardTitle = ({ title }: IBoardTitleProps) => {
 
       return updatedBoards;
     });
+  };
 
-    reset();
+  const onCancelEditTitle = () => {
+    setIsEditTitle(false);
   };
 
   // board 삭제
   const onDelete = () => {
     const updatedBoards = boards.filter((board) => board.title !== title);
-
     setBoards(updatedBoards);
   };
 
-  const onCancelEditTitle = () => {
-    setIsEditTitle(false);
-    reset();
-  };
+  useEffect(() => {
+    if (isEditTitle) {
+      reset();
+      setFocus("editTitle");
+    }
+  }, [isEditTitle, setFocus, reset]);
 
   return (
     <style.TitleContainer>
