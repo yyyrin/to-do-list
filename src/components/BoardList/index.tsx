@@ -10,12 +10,21 @@ import * as style from "./styles";
 import Board from "../Board";
 import Lottie from "lottie-react";
 import EmptyLottie from "../../assets/emptyLottie.json";
+import { useState } from "react";
 
 const BoardList = () => {
   const [boards, setBoards] = useRecoilState(boardState);
+  const [trashBinShow, setTrashBinShow] = useState(false);
+
+  const onDragStart = ({ type }: { type: string }) => {
+    if (type === "card") {
+      setTrashBinShow(true);
+    }
+  };
 
   // 드래그가 끝났을 때 실행되는 함수
   const onDragEnd = ({ destination, source, type }: DropResult) => {
+    setTrashBinShow(false);
     // 드래그를 시작한 위치와 같은 위치로 돌아오는 경우
     if (!destination) return;
 
@@ -106,7 +115,7 @@ const BoardList = () => {
   };
 
   return (
-    <DragDropContext onDragEnd={onDragEnd}>
+    <DragDropContext onDragEnd={onDragEnd} onDragStart={onDragStart}>
       {boards.length ? (
         <>
           <Droppable
@@ -145,7 +154,7 @@ const BoardList = () => {
             )}
           </Droppable>
           <div>
-            <style.TrashBin>
+            <style.TrashBin $trashBinShow={trashBinShow}>
               <Droppable droppableId="trashbin" type="card">
                 {(provided, snapshot) => (
                   <div ref={provided.innerRef} {...provided.droppableProps}>

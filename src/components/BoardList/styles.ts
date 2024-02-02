@@ -44,7 +44,7 @@ export const BinIcStyle = styled(BinIc)<{ $isDraggingOver: boolean }>`
   right: 50px;
 `;
 
-export const TrashBin = styled.div`
+export const TrashBin = styled.div<{ $trashBinShow: boolean }>`
   width: 60px;
   height: 60px;
   border-radius: 50%;
@@ -54,9 +54,9 @@ export const TrashBin = styled.div`
   position: fixed;
   bottom: 30px;
   right: 40px;
-  transition: all 0.15s ease;
+  transition: all 0.3s ease;
   display: flex;
-  opacity: 1;
+  opacity: ${(props) => (props.$trashBinShow ? 1 : 0)};
   &:hover {
     border-color: red;
     ${BinIcStyle} {
