@@ -1,6 +1,6 @@
 # To Do List
 
-## Overview
+## 1. Overview
 
 [![overview](./wiki/overview.gif)](https://yyyrin.github.io/to-do-list/)
 
@@ -10,9 +10,9 @@
 
 <br/><br/>
 
-## 주요 기능
+## 2. 주요 기능
 
-#### Board 및 To-Do 관리
+### 2.1. Board 및 To-Do 관리
 
 ![create](./wiki/create.gif)
 
@@ -21,7 +21,7 @@
 
 <br/>
 
-#### 드래그 앤 드롭 기능
+### 2.2. 드래그 앤 드롭 기능
 
 ![drag and drop](./wiki/drag-and-drop.gif)
 
@@ -29,7 +29,7 @@
 
 <br/>
 
-#### 수정과 삭제 기능
+### 2.3. 수정과 삭제 기능
 
 ![edit and delete](./wiki/edit-and-delete.gif)
 
@@ -41,14 +41,14 @@
 
 <br/>
 
-#### 로컬 스토리지와 동기화
+### 2.4. 로컬 스토리지와 동기화
 
 - `localStorage`에서 데이터를 가져오거나 저장하여 사용자가 앱을 닫았다가 다시 열어도 이전 상태를 유지
 - `Recoil` 상태가 변경될 때마다 자동으로 `localStorage`와 동기화
 
 <br/><br/>
 
-## Tech Stack
+## 3. Tech Stack
 
 - React
 - TypeScript
@@ -61,7 +61,7 @@
 
 <br/><br/>
 
-## Quick start
+## 4. Quick start
 
 ```bash
 git clone https://github.com/yyyrin/to-do-list.git
